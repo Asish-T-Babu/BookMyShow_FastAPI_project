@@ -1,18 +1,18 @@
 from sqlalchemy import Column, Integer, String, Enum, Boolean, DateTime, func
 import uuid
 
-from app.database.database import Base
-from app.model_enums import *
+from database.database import Base
+from model_enums import *
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'User'
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), nullable=False)
     first_name = Column(String(50))
     last_name = Column(String(50))
     email = Column(String(100), unique=True)
     dob = Column(DateTime)
-    gender = Column(Enum(GenderCategory))
+    gender = Column(Enum(GenderCategory, create_enum=False))
     username = Column(String(50), unique=True)
     password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
