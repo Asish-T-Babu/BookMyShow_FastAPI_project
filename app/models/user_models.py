@@ -1,8 +1,9 @@
 from sqlalchemy import Column, Integer, String, Enum, Boolean, DateTime, func
 import uuid
 
-from database.database import Base
-from model_enums import *
+from app.database import Base
+from app.enums.model_enums import *
+from app.flags import USER
 
 class User(Base):
     __tablename__ = 'User'
@@ -12,11 +13,12 @@ class User(Base):
     last_name = Column(String(50))
     email = Column(String(100), unique=True)
     dob = Column(DateTime)
-    gender = Column(Enum(GenderCategory, create_enum=False))
-    username = Column(String(50), unique=True)
+    gender = Column(Integer)
+    username = Column(String(50), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
+    role = Column(Integer, default=USER)
     created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
 
