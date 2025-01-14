@@ -1,14 +1,15 @@
 from pydantic import BaseModel, Field, EmailStr
 
 class User(BaseModel):
+    id: str
     username: str
     email: EmailStr | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
+    first_name: str | None = None
+    last_name: str | None = None
 
 
 class UserInDB(User):
-    hashed_password: str
+    password: str
 
 
 class UserCreate(BaseModel):
