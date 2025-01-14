@@ -5,9 +5,9 @@ from typing import Annotated
 from datetime import timedelta
 
 from app.database import get_db
-from app.utils import hash_password, authenticate_user, create_access_token
+from app.utils import hash_password, authenticate_user, create_access_token, token_validation
 from app.models.user_models import User
-from app.schemas.user_models_schemas import UserCreate
+from app.schemas.user_models_schemas import UserCreate, UserSchema
 from app.core.settings import oauth2_scheme, ACCESS_TOKEN_EXPIRE_DAYS
 from app.schemas.utils_shemas import Token
 
@@ -54,6 +54,11 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Sessio
     )
     return Token(access_token=access_token, token_type="bearer")
 
-@router.get("/users/me/")
-async def read_users_me(token: Annotated[str, Depends(oauth2_scheme)]):
-    return 'wow'
+@router.get("/me/", response_model=UserSchema)
+def read_users_me(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
+    user_id = token_validation(token)
+    # Check if the username already exists
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+    return UserSchema.from_orm(user)

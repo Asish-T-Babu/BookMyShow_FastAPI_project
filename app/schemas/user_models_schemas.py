@@ -1,14 +1,17 @@
 from pydantic import BaseModel, Field, EmailStr
 
-class User(BaseModel):
+class UserSchema(BaseModel):
     id: str
     username: str
     email: EmailStr | None = None
     first_name: str | None = None
     last_name: str | None = None
+    
+    class Config:
+        from_attributes = True 
 
 
-class UserInDB(User):
+class UserSchemaInDB(UserSchema):
     password: str
 
 
