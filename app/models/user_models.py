@@ -6,7 +6,7 @@ from app.enums.model_enums import *
 from app.flags import USER
 
 class User(Base):
-    __tablename__ = 'User'
+    __tablename__ = 'users'
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), nullable=False)
     first_name = Column(String(50))
