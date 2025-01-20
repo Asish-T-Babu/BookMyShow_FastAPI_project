@@ -6,7 +6,7 @@ import jwt
 
 from app.core.settings import pwd_context, ALGORITHM, SECRET_KEY
 from app.schemas.user_models_schemas import UserSchema, UserSchemaInDB
-from app.models.user_models import User
+from app.models.user import User
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)

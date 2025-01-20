@@ -1,14 +1,15 @@
-from sqlalchemy import Column, String, ForeignKey, DateTime
+from sqlalchemy import Column, String, ForeignKey, DateTime, Integer
 from sqlalchemy.orm import relationship
 import uuid
 from datetime import datetime
 
-from database import Base
-from app.models.user_models import User
+from app.database import Base
+from app.models.user import User
 
 # Theater model
 class Theater(Base):
     __tablename__ = "theaters"
+    
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), nullable=False)  # Store UUID as string
     name = Column(String, unique=True, nullable=False)
@@ -16,6 +17,7 @@ class Theater(Base):
     contact_info = Column(String, nullable=False)
     admins = relationship("User", secondary="theater_admins", back_populates="theaters")
     images = relationship("Image", back_populates="theater")
+    screens = relationship("Screen", back_populates="theater")
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -32,6 +34,18 @@ class Image(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+class Screen(Base):
+    __tablename__ = "screens"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()), nullable=False)
+    name = Column(String, nullable=False)
+    capacity = Column(Integer, nullable=False)
+    theater_id = Column(String(36), ForeignKey("theaters.id"), nullable=False)
+    theater = relationship("Theater", back_populates="screens")
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 # Junction table for many-to-many relationship
 class TheaterAdmin(Base):
     __tablename__ = "theater_admins"
@@ -44,3 +58,4 @@ class TheaterAdmin(Base):
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+

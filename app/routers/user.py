@@ -6,7 +6,7 @@ from datetime import timedelta
 
 from app.database import get_db
 from app.utils import hash_password, authenticate_user, create_access_token, token_validation
-from app.models.user_models import User
+from app.models.user import User
 from app.schemas.user_models_schemas import UserCreate, UserSchema
 from app.core.settings import oauth2_scheme, ACCESS_TOKEN_EXPIRE_DAYS
 from app.schemas.utils_shemas import Token
