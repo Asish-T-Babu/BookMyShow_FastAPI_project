@@ -7,9 +7,10 @@ from datetime import timedelta
 from app.database import get_db
 from app.utils import hash_password, authenticate_user, create_access_token, token_validation
 from app.models.user import User
-from app.schemas.user_models_schemas import UserCreate, UserSchema
+from app.schemas.user import UserCreate, UserSchema
 from app.core.settings import oauth2_scheme, ACCESS_TOKEN_EXPIRE_DAYS
 from app.schemas.utils_shemas import Token
+from app.flags import ACTIVE, INACTIVE, DELETED
 
 router = APIRouter()
 
@@ -40,7 +41,6 @@ async def create_user(user: Annotated[UserCreate, Form()], db: Session = Depends
 
 @router.post("/token")
 def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)) -> Token:
-    print(form_data, type(form_data), 'hello i am asish')
     user = authenticate_user(db, form_data)
     if not user:
         raise HTTPException(
@@ -61,4 +61,4 @@ def read_users_me(token: Annotated[str, Depends(oauth2_scheme)], db: Session = D
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=400, detail="User not found")
-    return UserSchema.from_orm(user)
+    return UserSchema.model_validate(user)

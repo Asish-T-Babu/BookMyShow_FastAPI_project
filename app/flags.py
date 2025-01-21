@@ -1,3 +1,8 @@
+# Status Flags
+ACTIVE = 1
+INACTIVE = 2
+DELETED = 3
+
 # Gender Flags
 MAN = 1
 WOMAN = 2

@@ -4,7 +4,7 @@ import uuid
 
 from app.database import Base
 from app.enums.model_enums import *
-from app.flags import USER
+from app.flags import USER, ACTIVE, INACTIVE, DELETED
 # from app.models.theaters import TheaterAdmin
 
 class User(Base):
@@ -22,8 +22,10 @@ class User(Base):
     is_active = Column(Boolean, default=True, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
     role = Column(Integer, default=USER)
-    
     theaters = relationship("Theater", secondary="theater_admins", back_populates="admins")
+    theater_admins = relationship("TheaterAdmin", back_populates="user")
+    status = Column(Integer, default=ACTIVE, nullable=False)
+
     created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
 

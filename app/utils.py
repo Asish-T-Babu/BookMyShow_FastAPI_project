@@ -1,12 +1,13 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from typing import Annotated
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 import jwt
 
-from app.core.settings import pwd_context, ALGORITHM, SECRET_KEY
-from app.schemas.user_models_schemas import UserSchema, UserSchemaInDB
+from app.core.settings import ALGORITHM, SECRET_KEY, pwd_context, oauth2_scheme
+from app.schemas.user import UserSchema, UserSchemaInDB
 from app.models.user import User
+from app.database import get_db
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
@@ -54,3 +55,13 @@ def token_validation(token):
     except:
         raise credentials_exception
     return user_id
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    user_id = token_validation(token)
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    return user

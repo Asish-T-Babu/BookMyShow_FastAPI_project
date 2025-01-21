@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from app.routers import user
+from app.routers import user, theater
 
 app = FastAPI(debug=True)
 
@@ -19,6 +19,7 @@ app.add_middleware(
 
 # Includ Routes
 app.include_router(user.router, prefix="/user")
+app.include_router(theater.router, prefix="/theater")
 
 
 @app.get("/")
