@@ -3,6 +3,8 @@ from typing import List, Optional
 from uuid import UUID
 from datetime import datetime
 
+from app.schemas.user import UserSchema
+
 
 class LocationCreate(BaseModel):
     city: str = Field(..., max_length=100, description="The city of the location")
@@ -11,7 +13,7 @@ class LocationCreate(BaseModel):
     pincode: str = Field(..., max_length=20, description="The postal or zip code of the location")
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "city": "New York",
                 "state": "NY",
@@ -23,6 +25,11 @@ class LocationCreate(BaseModel):
 
 class LocationResponse(LocationCreate):
     id: str
+    created_by: Optional[UserSchema]
+
+    class Config:
+        from_attributes = True 
+
 
 class TheaterCreate(BaseModel):
     name: str
@@ -49,4 +56,4 @@ class TheaterResponse(BaseModel):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
